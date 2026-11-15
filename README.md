@@ -37,5 +37,3 @@ Powered by **React, Three.js, React Three Fiber, and Google Gemini AI**, the app
 ### Project Vision
 
 To make planetary science and space exploration more interactive, accessible, and visually engaging by combining 3D simulation, scientific computing, comparative planetary research, and artificial intelligence into one unified digital platform.
-
-
