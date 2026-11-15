@@ -1,50 +1,39 @@
-OverviewTeam Space Punks — AstroDashboard is a full-stack planetary science and space exploration web application that unites high-contrast comparative telemetry, peer-reviewed editorial dispatches, an interactive 3D Sun–Earth–Moon–Mars orbital simulation engine, and a security-hardened Express backend proxy for Gemini AI telemetry synthesis.Designed for students, researchers, and space enthusiasts, the platform bridges terrestrial field analogs (such as Mauna Kea, the Mariana Trench, McMurdo Dry Valleys, and the Atacama Desert) with selenological and Martian counterparts using real NASA Planetary Data System (PDS), LROC, and USGS Astrogeology datasets.Key Features1. Four Integrated Experience ViewsThe application supports seamless switching across four dedicated modes (accessible via UI navigation or URL query parameters):Editorial Dispatch Hub (?view=editorial — Default):Embedded Interactive 3D Hero: Live React Three Fiber solar system viewport embedded directly in the hero header with instant focus controls for Earth, Moon, and Mars.Scroll-Locked Kinetic Narrative: A 3-stage sticky scroll experience (ScrollLockTextSection) highlighting terrestrial/lunar analogs, gravitational differentials ($1.00g$ vs. $0.165g$), and Apollo ALSEP archives.Curated Scientific Dispatches: Full-length research briefings covering subsurface cave astrobiology (NASA Ames / ELSI Origins Network), ancient Martian oceans, planetary habitability, and lunar polar water ice.Terrestrial Observatory Directory: Profiles of 6 major Earth-based observatories actively researching the Moon and Mars (NASA Ames, Mauna Kea IRTF/Keck, ALMA Chajnantor, Lowell Observatory, McDonald Laser Ranging, and Goldstone Solar System Radar DSS-14).Full-Screen 3D Celestial Engine (?view=simulation or ?autostart=1):Custom GLSL Planetary Shaders: Day/night Earth shader with city lights, specular ocean sun-glint, cloud layer, and Fresnel atmospheric scattering; high-relief Moon surface shader with front-hemisphere landmark culling; and a 3D Mars MOLA + Mastcam-Z topographic globe with dynamic water-ice cloud drift, dust limb scattering, and a live Mars Sol MTC clock.Nested Keplerian Orbital Mechanics: Simulates the Sun at the heliocentric origin, Earth in circular ecliptic orbit, the Moon in a $5.145^\circ$ inclined geocentric loop, and Mars in an outer $1.85^\circ$ inclined heliocentric orbit obeying Kepler's Third Law ($\omega \propto a^{-3/2}$), where tangential velocity ($v = \sqrt{GM/r}$) balances centripetal acceleration ($a_g = v^2/r$).Interactive 3D Surface Pins & Fly-To Camera: Clickable surface beacons for all 6 Apollo landing sites, robotic landers (Luna 2, Luna 9, Surveyor 3, Chandrayaan-3), lunar craters/maria, Martian landmarks (Jezero Crater, Gale Crater, Olympus Mons, Valles Marineris), and Earth observatories.Comparative Telemetry Dashboard (?view=dashboard):Synchronized Dual-Column Matrix: Side-by-side Earth vs. Moon location cards with synchronized scrolling, elevation datum offsets, thermal swing comparisons, and interactive in-card weight/jump calculators.Dual Orthographic Celestial Radar: Interactive, draggable HTML5 Canvas wireframe spheres projecting terrestrial and selenological coordinates in real time.Deep Metric Comparison Drawer & AI Synthesis: Detailed variance bars for surface gravity, thermal range, and cosmic radiation exposure, paired with on-demand server-side Gemini AI scientific synthesis.Astrophysics Reference & Live Physics Calculator: Reference tables, governing astrophysics equations (Newtonian gravity, escape velocity, Stefan-Boltzmann radiative equilibrium, and Jeans atmospheric escape), and interactive biomechanical/orbital calculators.Planetary Analogs Atlas (?view=analogs or #analogs):Dedicated exploration catalog pairing Earth–Moon and Earth–Mars geological analogs, complete Apollo 11–17 & Artemis mission logs with embedded NASA mission video briefings, and deep-dive articles on Mars rovers, volcanoes, craters, and planetary pioneers.2. Google Drive Cloud Archive (Optional)Authenticated users can connect via Firebase Google Sign-In (GoogleDrivePanel) to capture and upload PNG snapshots of the 3D celestial canvas or save and reload JSON simulation presets directly in their personal Google Drive.Tech StackLayerTechnologiesFrontend FrameworkReact 19, Vite 8, Tailwind CSS v4 (@tailwindcss/vite), Zustand3D Graphics & ShadersThree.js, React Three Fiber (@react-three/fiber), Drei (@react-three/drei), Custom GLSLUI & MotionFramer Motion (framer-motion / motion), Lucide React, RechartsBackend & AI ProxyNode.js (ESM), Express 4 (server.js & server.ts), Google Gen AI SDK (@google/genai)Cloud, Auth & SecurityFirebase Auth, Firebase App Check (reCAPTCHA v3), Cloud Firestore Rules, Google Drive API v3Testing & DeploymentNode Native Test Runner (node --test), TypeScript (tsc --noEmit), Docker, Google Cloud RunProject Structureruthvikroy-frontend-final-w-backend/
-├── Dockerfile                      # Production container build for Google Cloud Run
-├── firebase-applet-config.json     # Firebase client configuration template
-├── firebase-blueprint.json         # Firestore user profile schema definition
-├── firestore.rules                 # Hardened default-deny Firestore security rules
-├── index.html                      # Entry HTML with JetBrains Mono & Plus Jakarta Sans
-├── metadata.json                   # Project capability manifest
-├── package.json                    # Dependencies and npm scripts
-├── SECURITY.md                     # Detailed security architecture & hardening guide
-├── server.js                       # Production Express backend & Gemini API proxy (ESM)
-├── server.ts                       # TypeScript Express backend equivalent
-├── vite.config.ts                  # Vite config with 127.0.0.1 binding & /api proxy
-├── .env.example                    # Environment variable template
-├── public/
-│   └── assets/aistudio/            # High-resolution NASA, USGS & observatory imagery
-└── src/
-    ├── App.jsx                     # Root state coordinator & multi-view router
-    ├── index.css                   # Global styles & dark editorial design tokens
-    ├── main.jsx                    # React DOM entry point
-    ├── celestial/                  # Full-screen Three.js engine (Earth, Moon, Mars, Starfield, Shaders)
-    ├── components/                 # Dashboard UI, Radar, Physics Calculator, Drive Panel, AudioEngine
-    │   └── natgeo/                 # Editorial header, hero, scroll-lock narrative, articles & modals
-    ├── data/                       # Curated location pairs, lunar/Martian landmarks & analogs datasets
-    ├── services/                   # Proxy-based Gemini client, Firebase config, App Check & Drive API
-    ├── simulation/                 # Embedded R3F/Drei space scene, camera controller & GLSL shaders
-    └── utils/                      # Keplerian orbital math, telemetry comparators & unit test suites
-Security Architecture & Best PracticesFor complete hardening instructions, refer to SECURITY.md.Server-Side Gemini API Key Isolation (MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API):GEMINI_API_KEY is loaded exclusively on the Express backend (server.js / server.ts) from .env.local or .env.It is never prefixed with VITE_ and is explicitly excluded from Vite's define configuration so secrets never enter client bundles.Client requests route through /api/gemini/analyze, protected by an in-memory sliding-window rate limiter (30 requests/minute per IP), a 100kb request body limit, strict input schema validation (5,000-character prompt cap), a 10-second upstream timeout, security response headers, and automated API key redaction ([REDACTED]).Network-Isolated Development Binding:Local development binds strictly to 127.0.0.1 (localhost) by default to prevent exposing dev servers on shared Wi-Fi/LAN networks.When container or Cloud Run variables (K_SERVICE, CONTAINER_ID, DOCKER_CONTAINER, AIS_ENV, or NODE_ENV=production) are detected, the server automatically binds to 0.0.0.0 to satisfy ingress health checks.Firebase API Key Restrictions & App Check:Restrict browser Firebase API keys in Google Cloud Console to authorized website referrers and whitelist only Identity Toolkit API, Token Service API, and Cloud Firestore API (never Generative Language API).Configure VITE_RECAPTCHA_SITE_KEY in .env.local to enforce Firebase App Check (src/services/appCheck.js), or set VITE_FIREBASE_APPCHECK_DEBUG_TOKEN=true during local development.Hardened Firestore Security Rules (firestore.rules):Enforces a global default-deny policy with strict schema validation and owner-only document partitioning under /users/{userId} while blocking directory enumeration (allow list: if false).Getting StartedPrerequisitesNode.js 18+ (tested on Node 20 / 22)npm 9+Installation & SetupInstall dependencies:npm install
-Create your local environment file:cp .env.example .env.local
-Configure environment variables in .env.local:# Required for server-side AI telemetry synthesis
-GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.5-flash
+# Team Space Punks – AstroDashboard 🚀
 
-# Local server binding (defaults to 127.0.0.1)
-PORT=3000
-HOST=127.0.0.1
+**An Interactive Planetary Exploration, 3D Celestial Simulation & AI-Powered Comparative Telemetry Platform.**
 
-# Optional: Firebase App Check & Google Drive integration
-VITE_RECAPTCHA_SITE_KEY=your_recaptcha_v3_site_key_here
-VITE_FIREBASE_APPCHECK_DEBUG_TOKEN=true
-VITE_FIREBASE_API_KEY=your_restricted_firebase_api_key
-Start the full-stack development server:npm run dev
-Open http://127.0.0.1:3000 in your browser.Available ScriptsCommandDescriptionnpm run devStarts the Express backend (server.js) with Vite middleware on http://127.0.0.1:3000npm run dev:tsRuns the TypeScript Express server (server.ts) via tsxnpm run dev:viteRuns the standalone Vite dev server bound to 127.0.0.1:3000 (proxies /api to backend)npm run buildBuilds the optimized production frontend bundle into dist/npm run startRuns the production Express server serving pre-built assets from dist/npm run previewPreviews the production Vite build on http://127.0.0.1:3000npm run lintRuns TypeScript static type checking (tsc --noEmit)npm testExecutes the unit test suite (node --test src/**/*.test.js)npm run cleanRemoves the compiled dist/ directoryBackend API EndpointsMethodEndpointDescriptionGET/_health, /healthzLightweight liveness/readiness probes for Cloud Run & KubernetesGET/api/healthReturns server status, timestamp, host binding, and Gemini key configuration stateGET/api/security/auditVerifies active host isolation, key isolation, rate limiting, and Firestore rulesPOST/api/gemini/analyzeRate-limited Gemini proxy accepting { prompt, focusTarget }POST/api/gemini/generateGeneral prompt generation alias routed through the Gemini proxyPOST/api/gemini/telemetry-insightsComparative Earth/Moon site telemetry synthesis endpointDocker & Google Cloud Run DeploymentThe repository includes a production Dockerfile based on node:20-alpine configured for Google Cloud Run:# 1. Build the production frontend bundle
-npm run build
+Team Space Punks – AstroDashboard is a full-stack space exploration platform designed to visualize, explore, and compare celestial bodies through immersive 3D simulations and scientific telemetry.
 
-# 2. Build the Docker container image
-docker build -t space-punks-astrodashboard .
+The platform brings together Earth, the Moon, and Mars in an interactive astronomical environment, enabling users to explore planetary surfaces, investigate lunar landmarks, compare extreme terrestrial and extraterrestrial locations, and understand orbital mechanics through real-time visual simulations.
 
-# 3. Run locally in container mode (binds to 0.0.0.0:3000)
-docker run -p 3000:3000 -e GEMINI_API_KEY="your_api_key" space-punks-astrodashboard
-When deployed to Google Cloud Run, server.js automatically detects K_SERVICE / NODE_ENV=production, binds to 0.0.0.0:$PORT, and serves the static SPA bundle alongside the protected /api/* routes.
+Powered by **React, Three.js, React Three Fiber, and Google Gemini AI**, the application combines interactive 3D rendering, scientific data visualization, and AI-driven planetary insights into a unified exploration experience.
+
+### Key Features
+
+- **Interactive 3D Celestial Simulation:** Explore realistic 3D representations of Earth, the Moon, and Mars.
+- **Comparative Planetary Telemetry:** Compare geographical locations, elevations, terrain characteristics, and scientific metrics across Earth and the Moon.
+- **Orbital Mechanics & Physics:** Explore celestial motion, orbital calculations, and planetary physics.
+- **Lunar Exploration Database:** Discover Apollo landing sites, lunar craters, robotic landers, lunar maria, and near-Earth asteroids.
+- **Planetary Analog Research:** Explore terrestrial environments that provide scientific comparisons for extraterrestrial landscapes.
+- **Gemini AI Integration:** Generate AI-powered scientific explanations, planetary insights, and comparative analysis.
+- **Interactive Scientific Dashboard:** Explore telemetry visualizations, comparison panels, celestial radar, and simulation controls.
+- **Google Firebase Integration:** Incorporates Firebase services, Firestore security rules, and App Check.
+- **Secure Backend Architecture:** Uses an Express.js backend to isolate Gemini API credentials, validate requests, and implement rate limiting.
+
+### Technology Stack
+
+**Frontend:** React 19, Vite, Tailwind CSS, Framer Motion
+
+**3D & Visualization:** Three.js, React Three Fiber, React Three Drei, Recharts
+
+**Backend:** Node.js, Express.js
+
+**Artificial Intelligence:** Google Gemini API
+
+**Cloud & Security:** Firebase, Cloud Firestore, Firebase App Check, reCAPTCHA v3
+
+**Deployment:** Docker, Google Cloud Run
+
+### Project Vision
+
+To make planetary science and space exploration more interactive, accessible, and visually engaging by combining 3D simulation, scientific computing, comparative planetary research, and artificial intelligence into one unified digital platform.
