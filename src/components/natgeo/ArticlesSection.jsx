@@ -255,30 +255,6 @@ export function ArticlesSection({ onLaunchSimulation = () => {} }) {
                   — K. STRICKLAND, EDITOR IN CHIEF
                 </span>
               </div>
-
-              <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-mono-code uppercase tracking-[0.25em] text-[#888888] font-bold">
-                  ARCHIVAL INDICES
-                </span>
-                <ul className="text-xs font-mono-code text-[#888888] space-y-1.5">
-                  <li className="flex items-center justify-between hover:text-[#F1F1F1] cursor-pointer">
-                    <span>• VOYAGER INTERSTELLAR ARCHIVE</span>
-                    <span className="text-[#F5D000]">1977</span>
-                  </li>
-                  <li className="flex items-center justify-between hover:text-[#F1F1F1] cursor-pointer">
-                    <span>• APOLLO 11 TRANQUILITY BASE</span>
-                    <span className="text-[#F5D000]">1969</span>
-                  </li>
-                  <li className="flex items-center justify-between hover:text-[#F1F1F1] cursor-pointer">
-                    <span>• HUBBLE DEEP FIELD SOUTH</span>
-                    <span className="text-[#F5D000]">1998</span>
-                  </li>
-                  <li className="flex items-center justify-between hover:text-[#F1F1F1] cursor-pointer">
-                    <span>• JAMES WEBB COSMIC INFRARED</span>
-                    <span className="text-[#F5D000]">2022</span>
-                  </li>
-                </ul>
-              </div>
             </div>
 
             <div className="p-4 border border-[#F5D000]/40 bg-[#F5D000]/5 text-center flex flex-col gap-2">
